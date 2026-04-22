@@ -26,13 +26,14 @@ export default function UploadPage({ setSession }) {
     setLoading(true);
     setError("");
     setProgress(20);
+
     try {
-      // Step 1: Upload & parse resume
       const { data: resumeData } = await uploadResume(file);
       setProgress(60);
 
-      // Step 2: Auto-fetch recommendations
-      const { data: recData } = await getRecommendations(resumeData.resume_id);
+      const { data: recData } = await getRecommendations(
+        resumeData.resume_id
+      );
       setProgress(100);
 
       setSession({
@@ -47,7 +48,7 @@ export default function UploadPage({ setSession }) {
     } catch (err) {
       setError(
         err.response?.data?.detail ||
-        "Upload failed. Please check that your file is a valid PDF."
+          "Upload failed. Please check that your file is a valid PDF."
       );
     } finally {
       setLoading(false);
@@ -59,15 +60,20 @@ export default function UploadPage({ setSession }) {
     <div style={s.page} className="fade-up">
       {/* Hero */}
       <div style={s.hero}>
-        <div style={s.tag} className="badge badge-green">Beta · Free</div>
+        <div style={s.tag} className="badge badge-green">
+          Beta · Free
+        </div>
+
         <h1 style={s.title}>
-          Your AI<br />
+          Your AI <br />
           <span style={s.titleAccent}>Career Twin</span>
         </h1>
+
         <p style={s.subtitle}>
-          Upload your resume and unlock AI-powered career insights —<br />
+          Upload your resume and unlock AI-powered career insights —
           skill gaps, job probabilities, salary projections, and more.
         </p>
+
         <div style={s.features}>
           {[
             ["🧠", "NLP Skill Extraction"],
@@ -98,6 +104,7 @@ export default function UploadPage({ setSession }) {
           }}
         >
           <input {...getInputProps()} />
+
           {file ? (
             <div style={s.filePreview}>
               <div style={s.fileIcon}>📄</div>
@@ -107,16 +114,24 @@ export default function UploadPage({ setSession }) {
                   {(file.size / 1024).toFixed(1)} KB · Ready to analyze
                 </div>
               </div>
+
               <button
                 style={s.removeBtn}
-                onClick={(e) => { e.stopPropagation(); setFile(null); }}
-              >✕</button>
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFile(null);
+                }}
+              >
+                ✕
+              </button>
             </div>
           ) : (
             <div style={s.dropPlaceholder}>
               <div style={s.dropIcon}>⬆️</div>
               <div style={s.dropText}>
-                {isDragActive ? "Drop it here!" : "Drag & drop your PDF here"}
+                {isDragActive
+                  ? "Drop it here!"
+                  : "Drag & drop your PDF here"}
               </div>
               <div style={s.dropOr}>or</div>
               <div style={s.dropBrowse}>Browse files</div>
@@ -128,10 +143,16 @@ export default function UploadPage({ setSession }) {
         {loading && (
           <div style={{ marginBottom: 16 }}>
             <div style={s.progressLabel}>
-              {progress < 60 ? "📖 Parsing resume…" : "🎯 Generating recommendations…"}
+              {progress < 60
+                ? "📖 Parsing resume…"
+                : "🎯 Generating recommendations…"}
             </div>
+
             <div className="progress-track">
-              <div className="progress-fill" style={{ width: `${progress}%` }} />
+              <div
+                className="progress-fill"
+                style={{ width: `${progress}%` }}
+              />
             </div>
           </div>
         )}
@@ -140,19 +161,26 @@ export default function UploadPage({ setSession }) {
 
         <button
           className="btn btn-primary"
-          style={{ width: "100%", justifyContent: "center", fontSize: 15, padding: "14px" }}
+          style={s.button}
           onClick={handleUpload}
           disabled={!file || loading}
         >
           {loading ? (
-            <><span className="spinner" style={{ width: 18, height: 18, borderWidth: 2 }} /> Analyzing…</>
+            <>
+              <span
+                className="spinner"
+                style={{ width: 18, height: 18, borderWidth: 2 }}
+              />
+              Analyzing…
+            </>
           ) : (
-            <> Analyze My Resume →</>
+            <>Analyze My Resume →</>
           )}
         </button>
 
         <p style={s.disclaimer}>
-          Your resume is processed locally and never stored beyond this session.
+          Your resume is processed locally and never stored beyond this
+          session.
         </p>
       </div>
     </div>
@@ -162,69 +190,177 @@ export default function UploadPage({ setSession }) {
 const s = {
   page: {
     display: "grid",
-    gridTemplateColumns: "1fr 420px",
-    gap: 48,
+    gridTemplateColumns: "1fr",
+    gap: 32,
     alignItems: "center",
     minHeight: "80vh",
+    padding: "20px",
   },
-  hero: { display: "flex", flexDirection: "column", gap: 20 },
+
+  hero: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 16,
+  },
+
   tag: { alignSelf: "flex-start" },
+
   title: {
     fontFamily: "var(--font-display)",
-    fontSize: 58,
+    fontSize: "clamp(32px, 6vw, 58px)",
     fontWeight: 800,
-    lineHeight: 1.05,
+    lineHeight: 1.1,
     color: "var(--text-primary)",
   },
+
   titleAccent: {
     background: "linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%)",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
     backgroundClip: "text",
+    
   },
-  subtitle: { fontSize: 16, color: "var(--text-secondary)", lineHeight: 1.7, maxWidth: 420 },
-  features: { display: "flex", flexWrap: "wrap", gap: 10 },
+
+  subtitle: {
+    fontSize: "clamp(14px, 2.5vw, 16px)",
+    color: "var(--text-secondary)",
+    lineHeight: 1.6,
+    maxWidth: 500,
+  },
+
+  features: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+
   feature: {
-    display: "flex", alignItems: "center", gap: 6,
-    padding: "6px 14px",
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    padding: "6px 12px",
     background: "var(--bg-2)",
     border: "1px solid var(--border)",
     borderRadius: 50,
-    fontSize: 13,
-    color: "var(--text-secondary)",
+    fontSize: 12,
   },
-  uploadCard: { display: "flex", flexDirection: "column", gap: 18 },
-  cardTitle: { fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 700 },
-  cardSub: { fontSize: 13, color: "var(--text-muted)", marginTop: -12 },
+
+  uploadCard: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 18,
+  },
+
+  cardTitle: {
+    fontFamily: "var(--font-display)",
+    fontSize: 18,
+    fontWeight: 700,
+  },
+
+  cardSub: {
+    fontSize: 12,
+    color: "var(--text-muted)",
+    marginTop: -10,
+  },
+
   dropzone: {
     border: "2px dashed var(--border-hover)",
     borderRadius: "var(--radius)",
-    padding: "36px 20px",
+    padding: "24px 16px",
     cursor: "pointer",
-    transition: "all 0.2s",
     textAlign: "center",
   },
-  dropzoneActive: { borderColor: "var(--accent)", background: "rgba(110,231,183,0.04)" },
-  dropzoneFilled: { borderColor: "rgba(110,231,183,0.4)", borderStyle: "solid" },
-  dropPlaceholder: { display: "flex", flexDirection: "column", alignItems: "center", gap: 8 },
-  dropIcon: { fontSize: 36 },
-  dropText: { fontSize: 15, color: "var(--text-secondary)", fontWeight: 500 },
-  dropOr: { fontSize: 13, color: "var(--text-muted)" },
+
+  dropzoneActive: {
+    borderColor: "var(--accent)",
+  },
+
+  dropzoneFilled: {
+    borderColor: "rgba(110,231,183,0.4)",
+    borderStyle: "solid",
+  },
+
+  dropPlaceholder: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 6,
+  },
+
+  dropIcon: { fontSize: 28 },
+
+  dropText: {
+    fontSize: 14,
+    color: "var(--text-secondary)",
+  },
+
+  dropOr: {
+    fontSize: 12,
+    color: "var(--text-muted)",
+  },
+
   dropBrowse: {
-    fontSize: 13, fontWeight: 600, color: "var(--accent)",
-    border: "1px solid rgba(110,231,183,0.3)",
-    padding: "6px 18px", borderRadius: 50,
+    fontSize: 12,
+    fontWeight: 600,
+    color: "var(--accent)",
   },
+
   filePreview: {
-    display: "flex", alignItems: "center", gap: 14, textAlign: "left",
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    textAlign: "left",
   },
-  fileIcon: { fontSize: 32, flexShrink: 0 },
-  fileName: { fontSize: 14, fontWeight: 600, color: "var(--text-primary)" },
-  fileSize: { fontSize: 12, color: "var(--accent)", marginTop: 2 },
+
+  fileIcon: { fontSize: 28 },
+
+  fileName: {
+    fontSize: 13,
+    fontWeight: 600,
+  },
+
+  fileSize: {
+    fontSize: 11,
+    color: "var(--accent)",
+  },
+
   removeBtn: {
-    marginLeft: "auto", background: "none", border: "none",
-    color: "var(--text-muted)", cursor: "pointer", fontSize: 16, padding: "4px 8px",
+    marginLeft: "auto",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
   },
-  progressLabel: { fontSize: 13, color: "var(--text-secondary)", marginBottom: 8 },
-  disclaimer: { fontSize: 12, color: "var(--text-muted)", textAlign: "center" },
+
+  progressLabel: {
+    fontSize: 12,
+    marginBottom: 6,
+  },
+
+  button: {
+    width: "100%",
+    justifyContent: "center",
+    fontSize: 14,
+    padding: "12px",
+  },
+
+  disclaimer: {
+    fontSize: 11,
+    textAlign: "center",
+    color: "var(--text-muted)",
+  },
 };
+
+/* MEDIA QUERY (Desktop Layout) */
+if (typeof window !== "undefined") {
+  const style = document.createElement("style");
+  style.innerHTML = `
+    @media (min-width: 900px) {
+      .fade-up {
+        display: grid;
+        grid-template-columns: 1fr 420px !important;
+        gap: 48px !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
