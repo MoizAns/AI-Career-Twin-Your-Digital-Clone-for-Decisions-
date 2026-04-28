@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import resume, career, chatbot
+from backend.routes import resume, career, chatbot
 from database.db import init_db
 
 app = FastAPI(title="AI Career Twin API", version="1.0.0")
